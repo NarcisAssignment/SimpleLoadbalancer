@@ -171,7 +171,7 @@ You can see 3 dashboard on grafana (grafana user "admin", password "admin"):
 * SimpleLoadbalncer Logs
 * HAproxy
 
-And the Haproxy dashboard is available on port 1936 (in local 127.0.0.1:1936). 
+And the Haproxy dashboard is available on port 1936 (in local 127.0.0.1:1936, user and password: "admin"). 
 
 <br/>
 
