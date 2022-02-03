@@ -99,7 +99,7 @@ You must have Docker, Docker-compose installed and git on your system.
 
 * [Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
   
-### Installation
+### Installation/diployment
 
 To Installing and setting up app and all stacks follow these steps.
 
