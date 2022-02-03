@@ -146,9 +146,8 @@ To Installing and setting up app and all stacks follow these steps.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-_For More detail about project's endpoints , please refer to the [Swagger](./swagger.yml)_
-
-
+_For More detail about project's endpoints , please refer to the [Swagger](https://app.swaggerhub.com/apis/narcislinux/SimpleLoadbancer/0.0.0)._
+* ./swagger.yaml
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
