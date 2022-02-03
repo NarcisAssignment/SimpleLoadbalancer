@@ -1,0 +1,144 @@
+version: "3.7"
+
+networks:
+  simple-loadbalancer:
+    driver: bridge
+
+volumes:
+  mariadb_volume: {}
+  prometheus_data: {}
+  grafana_data: {}
+  container_logs: {}
+
+services:
+
+  haproxy:
+    image: haproxy:2.0.27-alpine
+    container_name: haproxy
+    restart: always
+    ports:
+      - 80:80
+      - 8404:8404
+      - '127.0.0.1:1936:1936'
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    networks:
+      - simple-loadbalancer
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MARIADB_DATABASE: books
+    volumes:
+    - mariadb_volume:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - simple-loadbalancer
+
+  app1:
+    container_name: app1
+    restart: always
+    build:
+      context: ..
+    depends_on:
+      - mariadb
+    ports:
+    - 8080:8080
+    volumes:
+      - container_logs:/var/log/simpleloadbalancer/
+    environment:
+      - DB_CONNECTION_STRING=root:root@tcp(mariadb:3306)/books?charset=utf8mb4&parseTime=True&loc=Local
+      - CREATE_LOG_FILE=true
+      - LOG_FILE=/var/log/simpleloadbalancer/gin.log
+    networks:
+      - simple-loadbalancer
+    depends_on: 
+      - mariadb
+
+  app2:
+    container_name: app2
+    restart: always
+    build:
+      context: ..
+    depends_on:
+      - mariadb
+    ports:
+    - 8081:8080
+    volumes:
+      - container_logs:/var/log/simpleloadbalancer/
+    environment:
+      - DB_CONNECTION_STRING=root:root@tcp(mariadb:3306)/books?charset=utf8mb4&parseTime=True&loc=Local
+      - CREATE_LOG_FILE=true
+      - LOG_FILE=/var/log/simpleloadbalancer/gin.log
+    networks:
+      - simple-loadbalancer
+    depends_on: 
+      - mariadb
+
+
+  prometheus:
+    image: prom/prometheus:v2.33.0
+    container_name: prometheus
+    restart: always
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: always
+    ports:
+      - 9090:9090
+      - 9091:9091
+    networks:
+      - simple-loadbalancer
+
+  loki:
+    image: grafana/loki:2.4.2
+    container_name: loki
+    restart: always
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - simple-loadbalancer
+
+  promtail:
+    image: grafana/promtail:2.4.2
+    container_name: promtail
+    restart: always
+    volumes:
+      - container_logs:/var/log/simpleloadbalancer/
+      - ./promtail/docker-promtail.yml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - simple-loadbalancer
+    depends_on: 
+      - loki
+
+  grafana:
+    image: grafana/grafana:8.3.4
+    container_name: grafana
+    restart: always
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - simple-loadbalancer
+    

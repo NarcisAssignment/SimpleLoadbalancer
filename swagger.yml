@@ -1,0 +1,92 @@
+openapi: 3.0.0
+
+info:
+  title: Simple Loadbalancer API
+  description: SimpleLoadbalancer is my assignment.
+  version: 0.0.0
+
+servers:
+  - url: http
+
+tags:
+- name: "books"
+  description: "Everything about Books"
+- name: "monitoring"
+  description: "Monitoring endpoints"
+
+paths:
+  /books:
+    get:
+      tags:
+       - books
+      summary: Returns a list of books.
+      description: Returns a list of all the books in the data base.
+      responses:
+        '200':
+          description: A JSON array of books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'           
+  /books/{bookID}:
+    get:
+      tags:
+       - books
+      summary: Returns the book whit ID.
+      description: Returns a list of all the books in the data base.
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "ID of book to return"
+        required: true
+        schema:
+          $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: A JSON array of book
+        '400':
+          description: Bad Request, User ID must be an integer and larger than 0.
+  /health:
+    get:
+      tags:
+       - monitoring
+      summary: Service status.
+      description: Returns service status.
+      responses:
+        '200':
+          description: Servic is up
+  /metrics:
+    get:
+      tags:
+       - monitoring
+      summary: Prometheus metris.
+      description: Returns metrics to be monitored with prometheus.
+      responses:
+        '200':
+          description: List of metrics
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - id
+        - title
+        - author
+        - summary
+        - rank
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Beyond Good And Evil"
+        author:
+          type: string
+          example: "Friedrich Nietzsche"
+        summary:
+          type: string
+          example: "Beyond Good And Evil asks, is truth absolute? Do humans invent ways to fortify already held views or truly seek the truth? Are the powerful more ‘right’ than the weak? Or is Nietzsche writing down page after page to hear himself talk?"
+        rank:
+          type: integer
+          example: 1
