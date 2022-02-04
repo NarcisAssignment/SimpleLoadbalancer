@@ -53,7 +53,6 @@ services:
       - container_logs:/var/log/simpleloadbalancer/
     environment:
       - DB_CONNECTION_STRING=root:root@tcp(mariadb:3306)/books?charset=utf8mb4&parseTime=True&loc=Local
-      - CREATE_LOG_FILE=true
       - LOG_FILE=/var/log/simpleloadbalancer/gin.log
     networks:
       - simple-loadbalancer
@@ -73,7 +72,6 @@ services:
       - container_logs:/var/log/simpleloadbalancer/
     environment:
       - DB_CONNECTION_STRING=root:root@tcp(mariadb:3306)/books?charset=utf8mb4&parseTime=True&loc=Local
-      - CREATE_LOG_FILE=true
       - LOG_FILE=/var/log/simpleloadbalancer/gin.log
     networks:
       - simple-loadbalancer
