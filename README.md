@@ -103,6 +103,28 @@ You must have Docker, Docker-compose installed and git on your system.
 
 To Installing and setting up app and all stacks follow these steps.
 
+### Instalation via Docker Image
+
+```sh
+ docker build -t slb:0.0 .
+ docker run -d --name emqx -e LOG_FILE="/var/log/simpleloadbalancer.log" -e DB_CONNECTION_STRING="root:root@(mysql address)/books?charset=utf8mb4&" -v simpleloadbalancer.logs:/var/log/simpleloadbalancer.log  -p 8080 slb
+```
+
+
+#### Build From Source
+
+```sh
+go mod download
+go mod o build -o ./app ./main.go
+
+# Set application's variables befor run it.
+export LOG_FILE="/var/log/simpleloadbalancer.log"
+export DB_CONNECTION_STRING=r"oot:root@(mysql address)/books?charset=utf8mb4&parseTime=True&loc=Local"
+```
+
+
+#### Deployment
+
 1. Clone the repo
    ```sh
    git clone git@github.com:narcislinux/SimpleLoadbalancer.git
