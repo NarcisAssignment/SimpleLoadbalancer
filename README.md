@@ -107,7 +107,7 @@ To Installing and setting up app and all stacks follow these steps.
 
 ```sh
  docker build -t slb:0.0 .
- docker run -d --name emqx -e LOG_FILE="/var/log/simpleloadbalancer.log" -e DB_CONNECTION_STRING="root:root@(mysql address)/books?charset=utf8mb4&" -v simpleloadbalancer.logs:/var/log/simpleloadbalancer.log  -p 8080 slb
+ docker run -d --name simpleloadbalancer -e LOG_FILE="/var/log/simpleloadbalancer.log" -e DB_CONNECTION_STRING="root:root@(mysql address)/books?charset=utf8mb4&" -v simpleloadbalancer.logs:/var/log/simpleloadbalancer.log  -p 8080 slb
 ```
 
 
