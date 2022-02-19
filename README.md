@@ -56,7 +56,7 @@
 
 <!-- ABOUT THE PROJECT -->
 # SimpleLoadbalancer
-It's my assignment ;) .
+simple loadbalancer write with golang and deployed with docker-compose .
 
 ## About The Assignment
 <br/>
